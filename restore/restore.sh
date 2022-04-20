@@ -19,6 +19,7 @@ REMOTE_PATH="storj-connection-name:backup-folder"
 REMOTE_FILE_NAME="$(${RCLONE} lsjson ${REMOTE_PATH} | jq -r '.[-1].Path')" # latest file item
 REMOTE_FILE_PATH="${REMOTE_PATH}/${REMOTE_FILE_NAME}"
 
+cd "${VAULTWARDEN_ROOT}"
 /usr/local/bin/docker-compose down
 
 source "${BACKUP_ROOT}"/backup.conf
