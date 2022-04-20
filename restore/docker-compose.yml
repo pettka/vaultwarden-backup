@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    environment:
+      - DOMAIN=https://vaultwarden.example.com:8443
+      - WEBSOCKET_ENABLED=false  # Enable WebSocket notifications.
+      - SMTP_HOST=
+      - SMTP_PORT=465
+      - SMTP_SSL=false
+      - SMTP_EXPLICIT_TLS=true
+      - SMTP_FROM=
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+    volumes:
+      - ./vw-data:/data
+        #    ports:
+        #      - 8089:80
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: always
+    ports:
+     # - 80:80  # Needed for the ACME HTTP-01 challenge.
+      - 8443:8443
+    volumes:
+      - ./caddy/cert:/cert:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/config:/config
+      - ./caddy/data:/data
+    environment:
+      - DOMAIN=https://vaultwarden.example.com  # Your domain.
+        #      - EMAIL=admin@example.com                 # The email address to use for ACME registration.
+      - LOG_FILE=/data/access.log
